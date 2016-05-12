@@ -1,0 +1,28 @@
+{
+  "name": "overmap",
+  "version": "1.0.0",
+  "description": "Fun with maps",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NathanRiemer/overmap.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NathanRiemer/overmap/issues"
+  },
+  "homepage": "https://github.com/NathanRiemer/overmap#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "crypto": "0.0.3",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "querystring": "^0.2.0",
+    "request": "^2.72.0"
+  }
+}
