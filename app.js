@@ -8,6 +8,10 @@ var querystring   = require('querystring');
 
 var app           = express();
 
+app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/bower_components'));
+
+
 app.use(session({
   secret: process.env.SESSION_SECRET,     
   resave: true,
@@ -94,9 +98,36 @@ app.get('/map', function(req, res) {
   var loggedIn = !!req.session.strava_access_token;
 
   if (loggedIn) {
+    res.render('map');
+    // get info from strava api
+    // var options = {
+    //   url: 'https://www.strava.com/api/v3/athlete/activities?access_token=' + req.session.strava_access_token
+    //   // headers: {
+    //   //   'User-Agent': 'OAuth Example App'
+    //   // }
+    // };
+
+    // request.get(options, function(error, httpResponse, responseBody) {
+    //   var responseBody = JSON.parse(responseBody);
+    //   console.log('responseBody:', responseBody);
+    //   var pLines = responseBody.map(function(activity) {
+    //     return activity.map.summary_polyline;
+    //   });
+    //   var wrapper = {stuff: pLines}
+    //   res.render('map');
+    // });
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.get('/api/activities', function(req, res) {
+  var loggedIn = !!req.session.strava_access_token;
+
+  if (loggedIn) {
     // get info from strava api
     var options = {
-      url: 'https://www.strava.com/api/v3/athlete/activities?access_token=' + req.session.strava_access_token
+      url: 'https://www.strava.com/api/v3/athlete/activities?per_page=100&access_token=' + req.session.strava_access_token
       // headers: {
       //   'User-Agent': 'OAuth Example App'
       // }
@@ -108,8 +139,8 @@ app.get('/map', function(req, res) {
       var pLines = responseBody.map(function(activity) {
         return activity.map.summary_polyline;
       });
-      var wrapper = {stuff: pLines}
-      res.render('map', wrapper);
+      // var wrapper = {stuff: pLines}
+      res.json(pLines);
     });
   } else {
     res.redirect('/');
