@@ -1,17 +1,9 @@
-
-
-
 $(document).ready(function() {
-
-
-  console.log('hello world');
-
   $.ajax({
     url: '/api/activities',
     type: 'get',
     dataType: 'json'
   }).done(function(activities) {
-    console.log(activities.length);
     initialize(activities);
   });
 
