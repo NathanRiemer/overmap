@@ -134,7 +134,7 @@ app.get('/oauth/runkeeper', function(req, res) {
     request.post('https://runkeeper.com/apps/token', {form: body}, function(error, httpResponse, responseBody) {
         var responseBody = JSON.parse(responseBody);
         req.session.runkeeper_access_token = responseBody.access_token;
-        console.log(responseBody);
+        // console.log(responseBody);
         res.redirect('/');
     });
   } else {
@@ -155,42 +155,55 @@ app.get('/rk_map', function(req, res) {
 });
 
 app.get('/api/rk_activities', function(req, res) {
-  var options = {
-    url: 'https://api.runkeeper.com/fitnessActivities/799263817?access_token=' + req.session.runkeeper_access_token
-  };
-  request.get(options, function(error, httpResponse, responseBody) {
-    var responseBody = JSON.parse(responseBody);
-    console.log(responseBody);
-  });
-
-  // var getActivities = function(lines, pageNumber, accessToken) {
-  //   var url = 'https://www.strava.com/api/v3/athlete/activities?per_page=200&access_token=' + accessToken + '&page=';
-  //   var options = {
-  //     url: url + pageNumber
-  //   };
-  //   request.get(options, function(error, httpResponse, responseBody) {
-  //     var responseBody = JSON.parse(responseBody);
-  //     var pLines = responseBody.map(function(activity) {
-  //       return activity.map.summary_polyline;
-  //     });
-  //     Array.prototype.push.apply(lines, pLines);
-  //     if (pLines.length < 200) {
-  //       res.json(lines);
-  //     } else {
-  //       getActivities(lines, ++pageNumber, accessToken);
-  //     }
-  //   });
+  // var activities = [];
+  // var url = 'https://api.runkeeper.com';
+  // var options = {
+  //   url: url + '/fitnessActivities?pageSize=100&access_token=' + req.session.runkeeper_access_token
   // };
+  // request.get(options, function(error, httpResponse, responseBody) {
+  //   var responseBody = JSON.parse(responseBody);
+  //   console.log(responseBody.next);
+  // });
 
-  // var loggedIn = !!req.session.strava_access_token;
+  var getRKActivities = function(activities, pageURI, accessToken) {
+    var url = 'https://api.runkeeper.com';
+    // var urlQueries = '&access_token=' + req.session.runkeeper_access_token
+    // var url = 'https://www.strava.com/api/v3/athlete/activities?per_page=200&access_token=' + accessToken + '&page=';
+    var options = {
+      url: url + pageURI + '&access_token=' + req.session.runkeeper_access_token
+    };
+    request.get(options, function(error, httpResponse, responseBody) {
+      var responseBody = JSON.parse(responseBody);
+      var nextURI = responseBody.next;
+      console.log(nextURI);
+      var pathedActivities = responseBody.items.filter(function(item) {
+        return item.has_path;
+      });
+      console.log(pathedActivities.length);
 
-  // if (loggedIn) {
-  //   var lines = [];
-  //   var pageNumber = 1;
-  //   getActivities(lines, pageNumber, req.session.strava_access_token);
-  // } else {
-  //   res.redirect('/');
-  // }
+      Array.prototype.push.apply(activities, pathedActivities);
+      console.log(activities.length);
+      if (!nextURI) {
+        // console.log(activities)
+        var coordinates = activities.map(function(activity) {
+          // console.log(activity.uri);
+        });
+        res.json(activities);
+      } else {
+        getRKActivities(activities, nextURI, accessToken);
+      }
+    });
+  };
+
+  var loggedIn = !!req.session.runkeeper_access_token;
+
+  if (loggedIn) {
+    var activities = [];
+    var pageURI = '/fitnessActivities?pageSize=100&page=0';
+    getRKActivities(activities, pageURI, req.session.runkeeper_access_token);
+  } else {
+    res.redirect('/');
+  }
 });
 
 

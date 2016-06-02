@@ -4,7 +4,9 @@ $(document).ready(function() {
     type: 'get',
     dataType: 'json'
   }).done(function(activities) {
-    initialize(activities);
+    console.log(activities);
+    console.log(activities.length);
+    // initialize(activities);
   });
 
 });
