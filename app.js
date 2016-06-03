@@ -185,9 +185,20 @@ app.get('/api/rk_activities', function(req, res) {
       console.log(activities.length);
       if (!nextURI) {
         // console.log(activities)
-        var coordinates = activities.map(function(activity) {
-          // console.log(activity.uri);
-        });
+        // var coordinates = [];
+        // activities.forEach(function(activity) {
+        //   // console.log(activity.uri);
+        //   var options = {
+        //     url: url + activity.uri + '?access_token=' + req.session.runkeeper_access_token
+        //   }
+        //   request.get(options, function(error, httpResponse, responseBody) {
+        //     var responseBody = JSON.parse(responseBody);
+        //     var path = responseBody.path;
+        //     console.log(path);
+        //     coordinates.push(path);
+        //   })
+        // });
+        // console.log(coordinates.length);
         res.json(activities);
       } else {
         getRKActivities(activities, nextURI, accessToken);
@@ -204,6 +215,20 @@ app.get('/api/rk_activities', function(req, res) {
   } else {
     res.redirect('/');
   }
+});
+
+app.get('/api/rk/fitnessActivities/:id', function(req, res) {
+  // console.log(req.params.id);
+  var options = {
+    url: 'https://api.runkeeper.com/fitnessActivities/' + req.params.id + '?access_token=' + req.session.runkeeper_access_token
+  };
+  request.get(options, function(error, httpResponse, responseBody) {
+    var responseBody = JSON.parse(responseBody);
+    var path = responseBody.path;
+    // console.log(path);
+    // coordinates.push(path);
+    res.json(path);
+  });
 });
 
 
