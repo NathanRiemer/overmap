@@ -1,3 +1,4 @@
+var map = 0;
 $(document).ready(function() {
   // var map = initialize();
   $.ajax({
@@ -50,10 +51,11 @@ var initialize = function(activities) {
       center: myLatlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
   }
-  var map = new google.maps.Map(document.getElementById("map"), myOptions);
+  map = new google.maps.Map(document.getElementById("map"), myOptions);
   // return map;
+
   activities.forEach(getPath);
-  
+
       
 
   // var decodedLevels = decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
