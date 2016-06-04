@@ -1,4 +1,4 @@
-var map = 0;
+var map;
 $(document).ready(function() {
   // var map = initialize();
   $.ajax({
@@ -19,12 +19,25 @@ var getPath = function(activity) {
     url: '/api/rk' + activity.uri,
     type: 'get',
     dataType: 'json'
-  }).done(function(path) {
-    // console.log(path);
-    var gCoords = convertPath(path);
+  }).done(function(activityDetail) {
+    console.log(activityDetail.type);
+    switch (activityDetail.type) {
+      case "Running":
+        strokeColor = '#FF0000';
+        break;
+      case "Cycling":
+        strokeColor = '#FF00e6';
+        break;
+      case "Walking":
+        strokeColor = '#00A1FF';
+        break;
+      default:
+        strokeColor = '#FF8800';
+    };
+    var gCoords = convertPath(activityDetail.path);
     var gPath = new google.maps.Polyline({
       path: gCoords,
-      strokeColor: '#FF0000',
+      strokeColor: strokeColor,
       strokeOpacity: .5,
       strokeWeight: 2
     });
@@ -47,16 +60,44 @@ var initialize = function(activities) {
   var myLatlng = new google.maps.LatLng(40.79055, -73.96400);
 
   var myOptions = {
-      zoom: 10,
-      center: myLatlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-  }
+    zoom: 10,
+    center: myLatlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    styles: [
+      {
+        featureType: "all",
+        stylers: [
+          { saturation: -75 }
+        ]
+      },
+      {
+        featureType: "road.highway",
+        stylers: [
+          { weight: 0.1 },
+          // { hue: "#ffa200" },
+          // { saturation: -13 }
+        ]
+      },
+      {
+        featureType: "poi.park",
+        stylers: [
+          { saturation: 75 },
+          { hue: "#77ff00" }
+        ]
+      },
+      {
+        featureType: "poi.business",
+        elementType: "labels",
+        stylers: [
+          { visibility: "off" }
+        ]
+      }
+    ]
+  };
   map = new google.maps.Map(document.getElementById("map"), myOptions);
   // return map;
 
   activities.forEach(getPath);
-
-      
 
   // var decodedLevels = decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 

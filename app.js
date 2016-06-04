@@ -183,26 +183,14 @@ app.get('/api/rk_activities', function(req, res) {
 
       Array.prototype.push.apply(activities, pathedActivities);
       console.log(activities.length);
+      // Commenting out to reduce API calls.
       if (!nextURI) {
-        // console.log(activities)
-        // var coordinates = [];
-        // activities.forEach(function(activity) {
-        //   // console.log(activity.uri);
-        //   var options = {
-        //     url: url + activity.uri + '?access_token=' + req.session.runkeeper_access_token
-        //   }
-        //   request.get(options, function(error, httpResponse, responseBody) {
-        //     var responseBody = JSON.parse(responseBody);
-        //     var path = responseBody.path;
-        //     console.log(path);
-        //     coordinates.push(path);
-        //   })
-        // });
-        // console.log(coordinates.length);
         res.json(activities);
       } else {
         getRKActivities(activities, nextURI, accessToken);
       }
+      // temporary
+      // res.json(activities);
     });
   };
 
@@ -224,10 +212,14 @@ app.get('/api/rk/fitnessActivities/:id', function(req, res) {
   };
   request.get(options, function(error, httpResponse, responseBody) {
     var responseBody = JSON.parse(responseBody);
-    var path = responseBody.path;
+    var activity = {
+      path: responseBody.path,
+      type: responseBody.type
+    };
+    // var path = responseBody.path;
     // console.log(path);
     // coordinates.push(path);
-    res.json(path);
+    res.json(activity);
   });
 });
 
