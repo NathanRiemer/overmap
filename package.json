@@ -18,11 +18,13 @@
   "homepage": "https://github.com/NathanRiemer/overmap#readme",
   "dependencies": {
     "body-parser": "^1.15.1",
+    "connect-redis": "^3.0.2",
     "crypto": "0.0.3",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "querystring": "^0.2.0",
+    "redis": "^2.6.1",
     "request": "^2.72.0"
   }
 }

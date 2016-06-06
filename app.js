@@ -6,15 +6,27 @@ var request       = require('request');
 var crypto        = require('crypto');
 var querystring   = require('querystring');
 
+var redis = require('redis');
+var redisStore = require('connect-redis')(session);
+var client = redis.createClient(process.env.REDIS_URL);
+
+
 var app           = express();
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/bower_components'));
 
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,     
+//   resave: true,
+//   saveUninitialized: true
+// }));
+
 app.use(session({
-  secret: process.env.SESSION_SECRET,     
-  resave: true,
-  saveUninitialized: true
+  secret: process.env.SESSION_SECRET,
+  store: new redisStore({client: client}),
+  saveUninitialized: false,
+  resave: false
 }));
 
 app.set('view engine', 'ejs');
