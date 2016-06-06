@@ -1,15 +1,11 @@
 var map;
 $(document).ready(function() {
-  // var map = initialize();
   $.ajax({
     url: '/api/rk_activities',
     type: 'get',
     dataType: 'json'
   }).done(function(activities) {
-    // console.log(activities);
-    // console.log(activities.length);
     initialize(activities);
-    // activities.forEach(getPath);
   });
 
 });
@@ -20,7 +16,6 @@ var getPath = function(activity) {
     type: 'get',
     dataType: 'json'
   }).done(function(activityDetail) {
-    console.log(activityDetail.type);
     switch (activityDetail.type) {
       case "Running":
         strokeColor = '#FF0000';
@@ -95,31 +90,5 @@ var initialize = function(activities) {
     ]
   };
   map = new google.maps.Map(document.getElementById("map"), myOptions);
-  // return map;
-
   activities.forEach(getPath);
-
-  // var decodedLevels = decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
-  // activities.forEach(function(path){
-  //   var decodedPath = google.maps.geometry.encoding.decodePath(path);
-  //   var setRegion = new google.maps.Polyline({
-  //     path: decodedPath,
-  //     levels: decodedLevels,
-  //     strokeColor: "#FF0000",
-  //     strokeOpacity: 0.5,
-  //     strokeWeight: 2,
-  //     map: map
-  //   });
-  // });
 };
-
-// var decodeLevels = function (encodedLevelsString) {
-//   var decodedLevels = [];
-
-//   for (var i = 0; i < encodedLevelsString.length; ++i) {
-//       var level = encodedLevelsString.charCodeAt(i) - 63;
-//       decodedLevels.push(level);
-//   }
-//   return decodedLevels;
-// };

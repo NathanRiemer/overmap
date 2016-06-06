@@ -19,6 +19,8 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
+var currentHost = process.env.OVERMAP_HOST;
+
 app.get('/', function(req, res) {
   var loggedIn = !!req.session.strava_access_token;
   res.render('index', {notice: '', loggedIn: loggedIn});
@@ -27,7 +29,7 @@ app.get('/', function(req, res) {
 app.get('/sign_in_with_strava', function(req, res) {
   var state = crypto.randomBytes(24).toString('hex');
   req.session.stravaState = state;
-  res.redirect('https://strava.com/oauth/authorize?client_id=' + process.env.STRAVA_OAUTH_CLIENT_ID + '&redirect_uri=http://localhost:3000/oauth/strava&response_type=code&approval_prompt=force&state=' + state);
+  res.redirect('https://strava.com/oauth/authorize?client_id=' + process.env.STRAVA_OAUTH_CLIENT_ID + '&redirect_uri=' + currentHost + '/oauth/strava&response_type=code&approval_prompt=force&state=' + state);
 
 });
 
@@ -117,7 +119,7 @@ app.get('/api/activities', function(req, res) {
 app.get('/sign_in_with_runkeeper', function(req, res) {
   var state = crypto.randomBytes(24).toString('hex');
   req.session.rkState = state;
-  res.redirect('https://runkeeper.com/apps/authorize?client_id=' + process.env.RUNKEEPER_OAUTH_CLIENT_ID + '&redirect_uri=http://localhost:3000/oauth/runkeeper&response_type=code&state=' + state);
+  res.redirect('https://runkeeper.com/apps/authorize?client_id=' + process.env.RUNKEEPER_OAUTH_CLIENT_ID + '&redirect_uri=' + currentHost + '/oauth/runkeeper&response_type=code&state=' + state);
 });
 
 app.get('/oauth/runkeeper', function(req, res) {
@@ -129,12 +131,11 @@ app.get('/oauth/runkeeper', function(req, res) {
       client_id: process.env.RUNKEEPER_OAUTH_CLIENT_ID,
       client_secret: process.env.RUNKEEPER_OAUTH_CLIENT_SECRET,
       code: code,
-      redirect_uri: 'http://localhost:3000/oauth/runkeeper'
+      redirect_uri: currentHost + '/oauth/runkeeper'
     }
     request.post('https://runkeeper.com/apps/token', {form: body}, function(error, httpResponse, responseBody) {
         var responseBody = JSON.parse(responseBody);
         req.session.runkeeper_access_token = responseBody.access_token;
-        // console.log(responseBody);
         res.redirect('/');
     });
   } else {
@@ -155,35 +156,20 @@ app.get('/rk_map', function(req, res) {
 });
 
 app.get('/api/rk_activities', function(req, res) {
-  // var activities = [];
-  // var url = 'https://api.runkeeper.com';
-  // var options = {
-  //   url: url + '/fitnessActivities?pageSize=100&access_token=' + req.session.runkeeper_access_token
-  // };
-  // request.get(options, function(error, httpResponse, responseBody) {
-  //   var responseBody = JSON.parse(responseBody);
-  //   console.log(responseBody.next);
-  // });
-
   var getRKActivities = function(activities, pageURI, accessToken) {
     var url = 'https://api.runkeeper.com';
-    // var urlQueries = '&access_token=' + req.session.runkeeper_access_token
-    // var url = 'https://www.strava.com/api/v3/athlete/activities?per_page=200&access_token=' + accessToken + '&page=';
     var options = {
       url: url + pageURI + '&access_token=' + req.session.runkeeper_access_token
     };
     request.get(options, function(error, httpResponse, responseBody) {
       var responseBody = JSON.parse(responseBody);
       var nextURI = responseBody.next;
-      console.log(nextURI);
       var pathedActivities = responseBody.items.filter(function(item) {
         return item.has_path;
       });
-      console.log(pathedActivities.length);
 
       Array.prototype.push.apply(activities, pathedActivities);
-      console.log(activities.length);
-      // Commenting out to reduce API calls.
+      // Comment out to reduce API calls.
       if (!nextURI) {
         res.json(activities);
       } else {
@@ -206,7 +192,6 @@ app.get('/api/rk_activities', function(req, res) {
 });
 
 app.get('/api/rk/fitnessActivities/:id', function(req, res) {
-  // console.log(req.params.id);
   var options = {
     url: 'https://api.runkeeper.com/fitnessActivities/' + req.params.id + '?access_token=' + req.session.runkeeper_access_token
   };
@@ -216,9 +201,6 @@ app.get('/api/rk/fitnessActivities/:id', function(req, res) {
       path: responseBody.path,
       type: responseBody.type
     };
-    // var path = responseBody.path;
-    // console.log(path);
-    // coordinates.push(path);
     res.json(activity);
   });
 });
