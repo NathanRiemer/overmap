@@ -1,10 +1,10 @@
 var express       = require('express');
 var session       = require('express-session');
 var ejs           = require('ejs');
-var bodyParser    = require('body-parser');
+// var bodyParser    = require('body-parser');
 var request       = require('request');
 var crypto        = require('crypto');
-var querystring   = require('querystring');
+// var querystring   = require('querystring');
 
 var redis = require('redis');
 var redisStore = require('connect-redis')(session);
