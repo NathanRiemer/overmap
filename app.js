@@ -89,7 +89,7 @@ app.get('/map', function(req, res) {
   var loggedIn = !!req.session.strava_access_token;
 
   if (loggedIn) {
-    var gmap = {src: "http://maps.google.com/maps/api/js?libraries=geometry&key=" + process.env.GOOGLE_MAPS_API_KEY}
+    var gmap = {src: "https://maps.google.com/maps/api/js?libraries=geometry&key=" + process.env.GOOGLE_MAPS_API_KEY}
     res.render('map', gmap);
   } else {
     res.redirect('/');
@@ -160,7 +160,7 @@ app.get('/rk_map', function(req, res) {
   var loggedIn = !!req.session.runkeeper_access_token;
 
   if (loggedIn) {
-    var gmap = {src: "http://maps.google.com/maps/api/js?libraries=geometry&key=" + process.env.GOOGLE_MAPS_API_KEY}
+    var gmap = {src: "https://maps.google.com/maps/api/js?libraries=geometry&key=" + process.env.GOOGLE_MAPS_API_KEY}
     res.render('rk_map', gmap);
   } else {
     res.redirect('/');
