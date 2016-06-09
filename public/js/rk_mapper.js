@@ -1,4 +1,8 @@
 var map;
+var totalActivities;
+var mappedActivities = 0;
+var totalKM = 0;
+var totalMiles = 0;
 $(document).ready(function() {
   $.ajax({
     url: '/api/rk_activities',
@@ -37,6 +41,11 @@ var getPath = function(activity) {
       strokeWeight: 2
     });
     gPath.setMap(map);
+    $('span.mapped').text(++mappedActivities);
+    totalKM += activityDetail.total_km;
+    totalMiles = totalKM * 0.621371;
+    $('span.kilometers').text(totalKM);
+    $('span.miles').text(totalMiles);
   });
 };
 
@@ -90,5 +99,7 @@ var initialize = function(activities) {
     ]
   };
   map = new google.maps.Map(document.getElementById("map"), myOptions);
+  totalActivities = activities.length;
+  $('span.detected').text(totalActivities);
   activities.forEach(getPath);
 };

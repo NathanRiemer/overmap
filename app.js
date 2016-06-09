@@ -211,7 +211,8 @@ app.get('/api/rk/fitnessActivities/:id', function(req, res) {
     var responseBody = JSON.parse(responseBody);
     var activity = {
       path: responseBody.path,
-      type: responseBody.type
+      type: responseBody.type,
+      total_km: responseBody.total_distance / 1000.0
     };
     res.json(activity);
   });
