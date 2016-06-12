@@ -3,6 +3,23 @@ var totalActivities;
 var mappedActivities = 0;
 var totalKM = 0;
 var totalMiles = 0;
+
+var activitiesBreakdown = {
+  running: {
+    count: 0,
+    kilometers: 0
+  },
+  walking: {
+    count: 0,
+    kilometers: 0
+  },
+  cycling: {
+    count: 0,
+    kilometers: 0
+  },
+
+};
+
 $(document).ready(function() {
   $.ajax({
     url: '/api/rk_activities',
@@ -23,12 +40,21 @@ var getPath = function(activity) {
     switch (activityDetail.type) {
       case "Running":
         strokeColor = '#FF0000';
+        $('#details .running .activities').text(++activitiesBreakdown.running.count);
+        activitiesBreakdown.running.kilometers += activityDetail.total_km;
+        $('#details .running .miles').text((activitiesBreakdown.running.kilometers * 0.621371).toFixed(0));
         break;
       case "Cycling":
         strokeColor = '#FF00e6';
+        $('#details .cycling .activities').text(++activitiesBreakdown.cycling.count);
+        activitiesBreakdown.cycling.kilometers += activityDetail.total_km;
+        $('#details .cycling .miles').text((activitiesBreakdown.cycling.kilometers * 0.621371).toFixed(0));
         break;
       case "Walking":
         strokeColor = '#00A1FF';
+        $('#details .walking .activities').text(++activitiesBreakdown.walking.count);
+        activitiesBreakdown.walking.kilometers += activityDetail.total_km;
+        $('#details .walking .miles').text((activitiesBreakdown.walking.kilometers * 0.621371).toFixed(0));
         break;
       default:
         strokeColor = '#FF8800';
@@ -41,11 +67,11 @@ var getPath = function(activity) {
       strokeWeight: 2
     });
     gPath.setMap(map);
-    $('span.mapped').text(++mappedActivities);
+    $('#info span.mapped').text(++mappedActivities);
     totalKM += activityDetail.total_km;
     totalMiles = totalKM * 0.621371;
-    $('span.kilometers').text(totalKM);
-    $('span.miles').text(totalMiles);
+    $('#info span.kilometers').text(totalKM.toFixed(0));
+    $('#info span.miles').text(totalMiles.toFixed(0));
   });
 };
 
@@ -100,6 +126,6 @@ var initialize = function(activities) {
   };
   map = new google.maps.Map(document.getElementById("map"), myOptions);
   totalActivities = activities.length;
-  $('span.detected').text(totalActivities);
+  $('#info span.detected').text(totalActivities);
   activities.forEach(getPath);
 };
