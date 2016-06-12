@@ -9,6 +9,7 @@ Fun with maps
   - [ ] Map starting point based on user data or input?
   - [ ] Share map?
   - [ ] Bring Strava map in line with RK map or refactor code for single page handling both
+  - [ ] Heatmap?
 - [ ] Appearance
   - [ ] Add buttons for authorization
   - [ ] Add styling
