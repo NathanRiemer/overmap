@@ -34,8 +34,9 @@ app.set('view engine', 'ejs');
 var currentHost = process.env.OVERMAP_HOST;
 
 app.get('/', function(req, res) {
-  var loggedIn = !!req.session.strava_access_token;
-  res.render('index', {notice: '', loggedIn: loggedIn});
+  var loggedInStrava = !!req.session.strava_access_token;
+  var loggedInRK = !!req.session.runkeeper_access_token;
+  res.render('index', {notice: '', loggedInStrava: loggedInStrava, loggedInRK: loggedInRK});
 });
 
 app.get('/sign_in_with_strava', function(req, res) {

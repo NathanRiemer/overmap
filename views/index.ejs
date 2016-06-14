@@ -1,18 +1,50 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-</head>
-<body>
-  <% if (!loggedIn) { %>
-    <a href="/sign_in_with_strava">Sign in with Strava</a>
-  <% } %>
-  <div><%= notice %></div>
-  <a href="/map">Strava Map</a>
+  <head>
+    <meta charset="UTF-8">
+    <title>Over-Map (Beta)</title>
+  </head>
+  <body>
+    <h1>Welcome to Over-Map!</h1>
+    <div class="welcome">
+      <h3>All your tracked outdoor activities on one map!</h3>
+      <p>Log in to your favorite activity tracking app to view all your saved activities displayed on a single map.</p>
+      <p>Provides a great overview of your favorite outdoor routes.</p>
+    </div>
+    <div><%= notice %></div>
+    <div class="app strava">
+      <% if (!loggedInStrava) { %>
+        <a href="/sign_in_with_strava"><img src="images/login_strava.png"></a>
+      <% } else { %>
+        <a href="/map">Strava Map</a>
+      <% } %>
+    </div><!--.app.strava-->
+    <br>
+    <div class="app runkeeper">
+      <% if (!loggedInRK) { %> 
+        <a href="/sign_in_with_runkeeper"><img src="images/login_runkeeper.png"></a>
+      <% } else { %>
+        <a href="rk_map">RunKeeper Map</a>
+      <% } %>
+    </div><!--.app.runkeeper-->
+    <div class="notes">
+      <h4>Notes:</h4>
+      <p>Over-Map will not save or edit any of your data.</p>
+      <p>Over-Map is still being developed, and your feedback is welcome:</p>
+      <ul>
+        <li>Other activity tracking apps you'd like to see added.</li>
+        <li>Bugs and unexpected behavior.</li>        
+      </ul>
 
-  <a href="/sign_in_with_runkeeper">Sign in with RunKeeper</a>
-  <a href="rk_map">Runkeeper Map</a>
-</body>
+      <p>Current issues (which should be addressed soon) include:</p>
+      <ul>
+        <li>Site styling</li>
+        <li>Maps default to Manhattan. You may need to zoom out to find your activities if you tend to run elsewhere.</li>
+        <li>The Strava map lacks activity type differentiation and distance total features available on the RunKeeper map.</li>
+      </ul>
+
+      <p>Created by Nathan Riemer. Email nathan.riemer@gmail.com with feedback.</p>
+    </div>
+  </body>
 </html>

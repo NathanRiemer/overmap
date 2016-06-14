@@ -11,7 +11,7 @@ Fun with maps
   - [ ] Bring Strava map in line with RK map or refactor code for single page handling both
   - [ ] Heatmap?
 - [ ] Appearance
-  - [ ] Add buttons for authorization
+  - [x] Add buttons for authorization
   - [ ] Add styling
   - [ ] Bigger map
   - [ ] Logo?
