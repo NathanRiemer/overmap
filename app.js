@@ -36,7 +36,8 @@ var currentHost = process.env.OVERMAP_HOST;
 app.get('/', function(req, res) {
   var loggedInStrava = !!req.session.strava_access_token;
   var loggedInRK = !!req.session.runkeeper_access_token;
-  res.render('index', {notice: '', loggedInStrava: loggedInStrava, loggedInRK: loggedInRK});
+  var loggedInUA = !!req.session.ua_access_token;
+  res.render('index', {notice: '', loggedInStrava: loggedInStrava, loggedInRK: loggedInRK, loggedInUA: loggedInUA});
 });
 
 app.get('/sign_in_with_strava', function(req, res) {
@@ -217,6 +218,89 @@ app.get('/api/rk/fitnessActivities/:id', function(req, res) {
     };
     res.json(activity);
   });
+});
+
+
+// Under Armour
+app.get('/sign_in_with_ua', function(req, res) {
+  // var state = crypto.randomBytes(24).toString('hex');
+  // req.session.uaState = state;
+  res.redirect('https://www.mapmyfitness.com/v7.1/oauth2/authorize/?client_id=' + process.env.UA_OAUTH_CLIENT_ID + '&redirect_uri=' + currentHost + '/oauth/ua&response_type=code');
+});
+
+app.get('/oauth/ua', function(req, res) {
+  var code = req.query.code;
+  var body = {
+    grant_type: 'authorization_code',
+    client_id: process.env.UA_OAUTH_CLIENT_ID,
+    client_secret: process.env.UA_OAUTH_CLIENT_SECRET,
+    code: code
+  }
+  request.post('https://api.ua.com/v7.1/oauth2/uacf/access_token', {form: body}, function(error, httpResponse, responseBody) {
+      var responseBody = JSON.parse(responseBody);
+      console.log(responseBody);
+      req.session.ua_access_token = responseBody.access_token;
+      req.session.ua_user_id = responseBody.user_id;
+      req.session.ua_refresh_token = responseBody.refresh_token;
+      res.redirect('/');
+  });
+});
+
+app.get('/ua_map', function(req, res) {
+  var loggedIn = !!req.session.ua_access_token;
+
+  if (loggedIn) {
+    var gmap = {src: "https://maps.google.com/maps/api/js?libraries=geometry&key=" + process.env.GOOGLE_MAPS_API_KEY}
+    res.render('ua_map', gmap);
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.get('/api/ua_activities', function(req, res) {
+  var url = 'https://api.ua.com/v7.1/workout/?user=' + req.session.ua_user_id;
+  var headers = {'api-key': process.env.UA_OAUTH_CLIENT_ID, 'authorization': 'Bearer ' + req.session.ua_access_token}
+  var options = {url: url, headers: headers};
+  request.get(options, function(error, httpResponse, responseBody) {
+    var responseBody = JSON.parse(responseBody);
+    console.log(responseBody);
+    res.json(responseBody);
+  });
+
+
+  // var getUAActivities = function(activities, pageURI, accessToken) {
+  //   var url = 'https://api.runkeeper.com';
+  //   var options = {
+  //     url: url + pageURI + '&access_token=' + req.session.runkeeper_access_token
+  //   };
+  //   request.get(options, function(error, httpResponse, responseBody) {
+  //     var responseBody = JSON.parse(responseBody);
+  //     var nextURI = responseBody.next;
+  //     var pathedActivities = responseBody.items.filter(function(item) {
+  //       return item.has_path;
+  //     });
+
+  //     Array.prototype.push.apply(activities, pathedActivities);
+  //     // Comment out to reduce API calls.
+  //     if (!nextURI) {
+  //       res.json(activities);
+  //     } else {
+  //       getRKActivities(activities, nextURI, accessToken);
+  //     }
+  //     // temporary
+  //     // res.json(activities);
+  //   });
+  // };
+
+  // var loggedIn = !!req.session.runkeeper_access_token;
+
+  // if (loggedIn) {
+  //   var activities = [];
+  //   var pageURI = '/fitnessActivities?pageSize=100&page=0';
+  //   getRKActivities(activities, pageURI, req.session.runkeeper_access_token);
+  // } else {
+  //   res.redirect('/');
+  // }
 });
 
 

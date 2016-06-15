@@ -28,6 +28,14 @@
         <a href="rk_map">RunKeeper Map</a>
       <% } %>
     </div><!--.app.runkeeper-->
+    <br>
+    <div class="app ua">
+      <% if (!loggedInUA) { %> 
+        <a href="/sign_in_with_ua"><img src="images/login_ua.png"></a>
+      <% } else { %>
+        <a href="ua_map">Under Armour / MapMyFitness Map</a>
+      <% } %>
+    </div><!--.app.ua-->
     <div class="notes">
       <h4>Notes:</h4>
       <p>Over-Map will not save or edit any of your data.</p>
