@@ -258,49 +258,73 @@ app.get('/ua_map', function(req, res) {
 });
 
 app.get('/api/ua_activities', function(req, res) {
-  var url = 'https://api.ua.com/v7.1/workout/?user=' + req.session.ua_user_id;
-  var headers = {'api-key': process.env.UA_OAUTH_CLIENT_ID, 'authorization': 'Bearer ' + req.session.ua_access_token}
-  var options = {url: url, headers: headers};
+  // var url = 'https://api.ua.com/v7.1/workout/?user=' + req.session.ua_user_id;
+  // var headers = {'api-key': process.env.UA_OAUTH_CLIENT_ID, 'authorization': 'Bearer ' + req.session.ua_access_token}
+  // var options = {url: url, headers: headers};
+  // request.get(options, function(error, httpResponse, responseBody) {
+  //   var responseBody = JSON.parse(responseBody);
+  //   console.log(responseBody);
+  //   res.json(responseBody);
+  // });
+
+  var getUAActivities = function(activities, pageURI, accessToken) {
+    var url = 'https://api.ua.com';
+    var headers = {'api-key': process.env.UA_OAUTH_CLIENT_ID, 'authorization': 'Bearer ' + req.session.ua_access_token}
+    var options = {
+      url: url + pageURI,
+      headers: headers
+    };
+    request.get(options, function(error, httpResponse, responseBody) {
+      var responseBody = JSON.parse(responseBody);
+      if (responseBody._links.next) {
+        var nextURI = responseBody._links.next[0].href;
+      } else {
+        var nextURI = false;
+      }
+      var routeIDs = responseBody._embedded.workouts.map(function(workout) { 
+        return workout._links.route[0].id; 
+      });
+      // var pathedActivities = responseBody.items.filter(function(item) {
+      //   return item.has_path;
+      // });
+
+      Array.prototype.push.apply(activities, routeIDs);
+      // Comment out to reduce API calls.
+      if (!nextURI) {
+        res.json(activities);
+      } else {
+        getUAActivities(activities, nextURI, accessToken);
+      }
+      // temporary
+      // res.json(activities);
+    });
+  };
+
+  var loggedIn = !!req.session.ua_access_token;
+
+  if (loggedIn) {
+    var activities = [];
+    var pageURI = '/v7.1/workout/?limit=20&offset=0&user=' + req.session.ua_user_id;
+    getUAActivities(activities, pageURI, req.session.ua_access_token);
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.get('/api/ua/route/:id', function(req, res) {
+  var options = {
+    url: 'https://api.ua.com/v7.1/route/' + req.params.id + '/?field_set=detailed',
+    headers: {'api-key': process.env.UA_OAUTH_CLIENT_ID, 'authorization': 'Bearer ' + req.session.ua_access_token}
+  };
   request.get(options, function(error, httpResponse, responseBody) {
     var responseBody = JSON.parse(responseBody);
-    console.log(responseBody);
+    // var activity = {
+    //   path: responseBody.path,
+    //   type: responseBody.type,
+    //   total_km: responseBody.total_distance / 1000.0
+    // };
     res.json(responseBody);
   });
-
-
-  // var getUAActivities = function(activities, pageURI, accessToken) {
-  //   var url = 'https://api.runkeeper.com';
-  //   var options = {
-  //     url: url + pageURI + '&access_token=' + req.session.runkeeper_access_token
-  //   };
-  //   request.get(options, function(error, httpResponse, responseBody) {
-  //     var responseBody = JSON.parse(responseBody);
-  //     var nextURI = responseBody.next;
-  //     var pathedActivities = responseBody.items.filter(function(item) {
-  //       return item.has_path;
-  //     });
-
-  //     Array.prototype.push.apply(activities, pathedActivities);
-  //     // Comment out to reduce API calls.
-  //     if (!nextURI) {
-  //       res.json(activities);
-  //     } else {
-  //       getRKActivities(activities, nextURI, accessToken);
-  //     }
-  //     // temporary
-  //     // res.json(activities);
-  //   });
-  // };
-
-  // var loggedIn = !!req.session.runkeeper_access_token;
-
-  // if (loggedIn) {
-  //   var activities = [];
-  //   var pageURI = '/fitnessActivities?pageSize=100&page=0';
-  //   getRKActivities(activities, pageURI, req.session.runkeeper_access_token);
-  // } else {
-  //   res.redirect('/');
-  // }
 });
 
 
