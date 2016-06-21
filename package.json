@@ -23,8 +23,10 @@
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "gulp-header": "^1.8.2",
     "querystring": "^0.2.0",
     "redis": "^2.6.1",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "semantic-ui": "^2.1.8"
   }
 }
