@@ -4,20 +4,33 @@
     <title>RK Map</title>
     <script type="text/javascript" src="<%= src %>"></script>
     <script type="text/javascript" src="jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script src="semantic/dist/semantic.min.js"></script>
     <script type="text/javascript" src="js/rk_mapper.js"></script>
     <style type="text/css"> 
     #map {width:670px;height:600px;}
     </style>
   </head>
-  <body> 
-    <h1>Map!</h1>
-    <div id="info">
-      <p><span class="activities mapped">0</span> of <span class="activities detected">0</span> activities mapped.</p>
-      <p>Total Kilometers: <span class="distance kilometers">0</span></p>
-      <p>Total Miles: <span class="distance miles">0</span></p>
+  <body>
+    <div class="ui large menu">
+      <a href="/" class="header item">Over-Map</a>
+      <a href="#" class="item">Data provided by RunKeeper</a>
+
+      <div class="right item" id="info">
+        <div class="item"><span class="activities detected">0</span> Activities</div>
+        <div class="item"><span class="distance miles">0</span> Miles</div>
+        <div class="item"><span class="distance kilometers">0</span> KM</div>
+      </div>
+    </div><!--.ui.fixed.menu"-->
+    <div class="ui indicating progress" id="progressBar">
+      <div class="bar">
+        <div class="progress"></div>
+      </div>
     </div>
+
     <div id="map"></div>
-    <div id="details">
+
+    <div class="" id="details">
       <p class="running">Running: <span class="activities">0</span>, Miles: <span class="miles">0</span></p>
       <p class="walking">Walking: <span class="activities">0</span>, Miles: <span class="miles">0</span></p>
       <p class="cycling">Cycling: <span class="activities">0</span>, Miles: <span class="miles">0</span></p>

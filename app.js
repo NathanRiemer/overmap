@@ -198,7 +198,10 @@ app.get('/api/rk_activities', function(req, res) {
 
   if (loggedIn) {
     var activities = [];
+    // switch to reduce API calls
     var pageURI = '/fitnessActivities?pageSize=100&page=0';
+    // var pageURI = '/fitnessActivities?pageSize=10&page=0';
+    //
     getRKActivities(activities, pageURI, req.session.runkeeper_access_token);
   } else {
     res.redirect('/');
