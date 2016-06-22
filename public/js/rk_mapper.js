@@ -67,7 +67,8 @@ var getPath = function(activity) {
       strokeWeight: 2
     });
     gPath.setMap(map);
-    $('#info span.mapped').text(++mappedActivities);
+    // $('#info span.mapped').text(++mappedActivities);
+    $('#progressBar').progress('increment');
     totalKM += activityDetail.total_km;
     totalMiles = totalKM * 0.621371;
     $('#info span.kilometers').text(totalKM.toFixed(0));
@@ -127,5 +128,6 @@ var initialize = function(activities) {
   map = new google.maps.Map(document.getElementById("map"), myOptions);
   totalActivities = activities.length;
   $('#info span.detected').text(totalActivities);
+  $('#progressBar').progress({total: totalActivities});
   activities.forEach(getPath);
 };

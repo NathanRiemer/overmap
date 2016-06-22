@@ -198,7 +198,10 @@ app.get('/api/rk_activities', function(req, res) {
 
   if (loggedIn) {
     var activities = [];
+    // switch to reduce API calls
     var pageURI = '/fitnessActivities?pageSize=100&page=0';
+    // var pageURI = '/fitnessActivities?pageSize=10&page=0';
+    //
     getRKActivities(activities, pageURI, req.session.runkeeper_access_token);
   } else {
     res.redirect('/');
@@ -235,8 +238,9 @@ app.get('/oauth/ua', function(req, res) {
     client_id: process.env.UA_OAUTH_CLIENT_ID,
     client_secret: process.env.UA_OAUTH_CLIENT_SECRET,
     code: code
-  }
-  request.post('https://api.ua.com/v7.1/oauth2/uacf/access_token', {form: body}, function(error, httpResponse, responseBody) {
+  };
+  var headers = {'api-key': process.env.UA_OAUTH_CLIENT_ID};
+  request.post('https://api.ua.com/v7.1/oauth2/uacf/access_token', {form: body, headers: headers}, function(error, httpResponse, responseBody) {
       var responseBody = JSON.parse(responseBody);
       console.log(responseBody);
       req.session.ua_access_token = responseBody.access_token;
