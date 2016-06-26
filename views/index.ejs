@@ -8,53 +8,67 @@
     <script src="semantic/dist/semantic.min.js"></script>
   </head>
   <body>
-    <h1>Welcome to Over-Map!</h1>
-    <div class="welcome">
-      <h3>All your tracked outdoor activities on one map!</h3>
-      <p>Log in to your favorite activity tracking app to view all your saved activities displayed on a single map.</p>
-      <p>Provides a great overview of your favorite outdoor routes.</p>
+    <div class="ui inverted vertical masthead center aligned segment">
+      <h1 class="ui giant header">Welcome to Over-Map!</h1>
+      <div class="welcome">
+        <h3>All your tracked outdoor activities on one map!</h3>
+        <p>Log in to your favorite activity tracking app to view all your saved activities displayed on a single map.</p>
+        <p>Provides a great overview of your favorite outdoor routes.</p>
+      </div>
     </div>
+
     <div><%= notice %></div>
-    <div class="app strava">
-      <% if (!loggedInStrava) { %>
-        <a href="/sign_in_with_strava"><img src="images/login_strava.png"></a>
-      <% } else { %>
-        <a href="/map">Strava Map</a>
-      <% } %>
-    </div><!--.app.strava-->
-    <br>
-    <div class="app runkeeper">
-      <% if (!loggedInRK) { %> 
-        <a href="/sign_in_with_runkeeper"><img src="images/login_runkeeper.png"></a>
-      <% } else { %>
-        <a href="rk_map">RunKeeper Map</a>
-      <% } %>
-    </div><!--.app.runkeeper-->
-    <br>
-    <div class="app ua">
-      <% if (!loggedInUA) { %> 
-        <a href="/sign_in_with_ua"><img src="images/login_UA.png"></a>
-      <% } else { %>
-        <a href="ua_map">Under Armour / MapMyFitness Map</a>
-      <% } %>
-    </div><!--.app.ua-->
-    <div class="notes">
-      <h4>Notes:</h4>
-      <p>Over-Map will not save or edit any of your data.</p>
-      <p>Over-Map is still being developed, and your feedback is welcome:</p>
-      <ul>
-        <li>Other activity tracking apps you'd like to see added.</li>
-        <li>Bugs and unexpected behavior.</li>        
-      </ul>
+    <div class="ui vertical stripe segment">
+      <div class="ui equal width stackable internally celled grid">
+        <div class="center aligned row">
+          <div class="column app strava">
+            <% if (!loggedInStrava) { %>
+              <a href="/sign_in_with_strava"><img src="images/login_strava.png"></a>
+            <% } else { %>
+              <a href="/map">Strava Map</a>
+            <% } %>
+          </div><!--.app.strava-->
+          <br>
+          <div class="column app runkeeper">
+            <% if (!loggedInRK) { %> 
+              <a href="/sign_in_with_runkeeper"><img src="images/login_runkeeper.png"></a>
+            <% } else { %>
+              <a href="rk_map">RunKeeper Map</a>
+            <% } %>
+          </div><!--.app.runkeeper-->
+          <br>
+          <div class="column app ua">
+            <% if (!loggedInUA) { %> 
+              <a href="/sign_in_with_ua"><img src="images/login_UA.png"></a>
+            <% } else { %>
+              <a href="ua_map">Under Armour / MapMyFitness Map</a>
+            <% } %>
+          </div><!--.app.ua-->
 
-      <p>Current issues (which should be addressed soon) include:</p>
-      <ul>
-        <li>Site styling</li>
-        <li>Maps default to Manhattan. You may need to zoom out to find your activities if you tend to run elsewhere.</li>
-        <li>The Strava map lacks activity type differentiation and distance total features available on the RunKeeper map.</li>
-      </ul>
+        </div>
+      </div>
+    </div>
 
-      <p>Created by Nathan Riemer. Email nathan.riemer@gmail.com with feedback.</p>
+    <div class="ui vertical stripe segment">
+      <div class="ui text container">
+        <div class="notes">
+          <h3 class="ui header">Notes:</h3>
+          <p>Over-Map will not save or edit any of your data.</p>
+          <p>Over-Map is still being developed, and your feedback is welcome:</p>
+          <ul>
+            <li>Other activity tracking apps you'd like to see added.</li>
+            <li>Bugs and unexpected behavior.</li>        
+          </ul>
+
+          <h4 class="ui horizontal header divider">Current issues:</h4>
+          <ul>
+            <li>Maps default to Manhattan. You may need to zoom out to find your activities if you tend to run elsewhere.</li>
+            <li>Activity-type breakdowns are currently only available on the RunKeeper map.</li>
+          </ul>
+
+          <p>Created by Nathan Riemer. Email nathan.riemer@gmail.com with feedback.</p>
+        </div>
+      </div>
     </div>
   </body>
 </html>

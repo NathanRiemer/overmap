@@ -15,5 +15,5 @@ Fun with maps
   - [x] Add buttons for authorization
   - [x] Add welcome and explanation
   - [x] Add styling
-  - [ ] Bigger map
+  - [x] Bigger map
   - [ ] Logo?
